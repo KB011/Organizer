@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+import { Server } from 'node:http';
+import { gracefulShutdown, prisma } from '@server/config';
 
 dotenv.config();
 
@@ -33,4 +35,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json({ message: err.message });
 });
 
-app.listen(PORT, () => console.log('Server running'));
+const server: Server = app.listen(PORT, () =>
+  console.log(`Express Server running at port: ${PORT}`)
+);
+
+// Handle server shutdown for local and remote environments
+['SIGTERM', 'SIGINT'].forEach(signal => process.on(signal, () => gracefulShutdown(signal, server)));
