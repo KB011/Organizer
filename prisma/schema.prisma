@@ -18,3 +18,34 @@ model Temp {
   id Int @id @default(autoincrement())
   name String @db.VarChar(80)
 }
+
+model Reminder {
+  id                Int               @id @default(autoincrement())
+  uuid              String            @unique @default(uuid())
+  title             String
+  description       String?
+  user_id           Int?
+  category_id       Int?
+  status            ReminderStatus    @default(ACTIVE)
+  priority          Priority          @default(LOW)
+  due_date          DateTime?
+  remind_at         DateTime?
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  completed_at      DateTime?
+  deleted_at        DateTime?
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  URGENT
+  CRITICAL
+}
+
+enum ReminderStatus {
+  ACTIVE
+  ARCHIVED
+  COMPLETED
+  DELETED
+}
