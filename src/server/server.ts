@@ -1,10 +1,13 @@
-import express, { Application, NextFunction, Request, Response } from 'express';
+import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+import swaggerUI from 'swagger-ui-express';
 import { Server } from 'node:http';
-import { gracefulShutdown, prisma } from '@server/config';
+import { gracefulShutdown, swaggerSpec } from '@server/config';
+import { ReminderRouter } from '@server/routes';
+import { globalErrorHandler } from '@server/middlewares';
 
 dotenv.config();
 
@@ -26,14 +29,16 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
+// Swagger API Documentation
+app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ message: 'All OK!' });
 });
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: err.message });
-});
+app.use('/reminders', ReminderRouter);
+
+app.use(globalErrorHandler);
 
 const server: Server = app.listen(PORT, () =>
   console.log(`Express Server running at port: ${PORT}`)
