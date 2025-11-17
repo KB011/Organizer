@@ -1,1 +1,1 @@
-export { PostReminderSchema } from './reminder-validation';
+export { CreateReminderSchema, CreateReminderInterface } from './reminder-validation';
