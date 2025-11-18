@@ -25,6 +25,10 @@ export const addReminderDao = async ({
     },
     select: {
       uuid: true,
+      title: true,
+      description: true,
+      status: true,
+      priority: true,
       created_at: true,
     },
   });
