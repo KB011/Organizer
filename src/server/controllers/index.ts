@@ -1,1 +1,1 @@
-export { addReminderController } from '@server/controllers/reminder-controller';
+export * from '@server/controllers/reminder-controller';

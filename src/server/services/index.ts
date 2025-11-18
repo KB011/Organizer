@@ -1,1 +1,1 @@
-export { addReminderService } from '@server/services/reminder-service';
+export * from '@server/services/reminder-service';
