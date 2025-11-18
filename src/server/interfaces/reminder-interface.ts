@@ -17,3 +17,11 @@ export interface CreateReminderAPIResponse {
   priority: Priority;
   createdAt: Date;
 }
+
+export interface GetReminderResponse {
+  uuid: string;
+  title: string;
+  description: string | null;
+  status: ReminderStatus;
+  priority: Priority;
+}

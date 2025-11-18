@@ -1,7 +1,8 @@
-import { addReminderDao } from '../dao';
+import { addReminderDao, getReminderByUuidDao } from '@server/dao';
 import { CreateReminderInterface } from '@server/validations';
-import { CreateReminderAPIResponse } from '@server/interfaces';
+import { CreateReminderAPIResponse, GetReminderResponse } from '@server/interfaces';
 import { logger } from '@server/config';
+import { AppError } from '@server/utils';
 
 export const addReminderService = async (
   reminderPayload: CreateReminderInterface
@@ -19,4 +20,10 @@ export const addReminderService = async (
 
   const response = { uuid, title, description, status, priority, createdAt };
   return response;
+};
+
+export const getReminderByUuidService = async (uuid: string): Promise<GetReminderResponse> => {
+  const reminder = await getReminderByUuidDao(uuid);
+  if (!reminder) throw new AppError(404, `Reminder with UUID: ${uuid} does not exist`);
+  return reminder;
 };

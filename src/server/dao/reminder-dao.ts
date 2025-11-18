@@ -1,6 +1,6 @@
 import { prisma } from '@server/config';
 import { CreateReminderInterface } from '@server/validations';
-import { CreateReminderPrismaResponse } from '@server/interfaces';
+import { CreateReminderPrismaResponse, GetReminderResponse } from '@server/interfaces';
 
 export const addReminderDao = async ({
   title,
@@ -34,4 +34,22 @@ export const addReminderDao = async ({
   });
 
   return newReminder;
+};
+
+export const getReminderByUuidDao = async (uuid: string): Promise<GetReminderResponse | null> => {
+  const reminder = await prisma.reminder.findFirst({
+    where: {
+      uuid,
+    },
+
+    select: {
+      uuid: true,
+      title: true,
+      description: true,
+      status: true,
+      priority: true,
+    },
+  });
+
+  return reminder;
 };
