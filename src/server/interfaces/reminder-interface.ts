@@ -18,10 +18,22 @@ export interface CreateReminderAPIResponse {
   createdAt: Date;
 }
 
-export interface GetReminderResponse {
+export interface GetReminderPrismaResponse {
   uuid: string;
   title: string;
   description: string | null;
   status: ReminderStatus;
   priority: Priority;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface GetReminderAPIResponse {
+  uuid: string;
+  title: string;
+  description: string | null;
+  status: ReminderStatus;
+  priority: Priority;
+  createdAt: Date;
+  updatedAt: Date;
 }

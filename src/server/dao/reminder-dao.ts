@@ -1,6 +1,6 @@
 import { prisma } from '@server/config';
 import { CreateReminderInterface } from '@server/validations';
-import { CreateReminderPrismaResponse, GetReminderResponse } from '@server/interfaces';
+import { CreateReminderPrismaResponse, GetReminderPrismaResponse } from '@server/interfaces';
 
 export const addReminderDao = async ({
   title,
@@ -36,7 +36,9 @@ export const addReminderDao = async ({
   return newReminder;
 };
 
-export const getReminderByUuidDao = async (uuid: string): Promise<GetReminderResponse | null> => {
+export const getReminderByUuidDao = async (
+  uuid: string
+): Promise<GetReminderPrismaResponse | null> => {
   const reminder = await prisma.reminder.findFirst({
     where: {
       uuid,
@@ -48,6 +50,8 @@ export const getReminderByUuidDao = async (uuid: string): Promise<GetReminderRes
       description: true,
       status: true,
       priority: true,
+      created_at: true,
+      updated_at: true,
     },
   });
 
