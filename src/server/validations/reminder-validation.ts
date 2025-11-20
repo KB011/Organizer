@@ -33,4 +33,13 @@ export const CreateReminderSchema = z.object({
   deletedAt: z.date().optional(),
 });
 
+export const GetAllRemindersQuerySchema = z.object({
+  limit: z.coerce
+    .number('Pagination limit must be a number')
+    .min(0, 'Pagination limit cannot be lesser than zero.'),
+  offset: z.coerce
+    .number('Pagination offset must be a number')
+    .min(0, 'Pagination offset cannot be lesser than zero.'),
+});
+
 export type CreateReminderInterface = z.infer<typeof CreateReminderSchema>;

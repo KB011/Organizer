@@ -1,4 +1,4 @@
-import { addReminderDao, getReminderByUuidDao } from '@server/dao';
+import { addReminderDao, getAllRemindersDao, getReminderByUuidDao } from '@server/dao';
 import { CreateReminderInterface } from '@server/validations';
 import { CreateReminderAPIResponse, GetReminderAPIResponse } from '@server/interfaces';
 import { logger } from '@server/config';
@@ -48,4 +48,22 @@ export const getReminderByUuidService = async (
     updatedAt,
   };
   return response;
+};
+
+export const getAllRemindersService = async (
+  limit: number,
+  offset: number
+): Promise<{ reminders: GetReminderAPIResponse[]; count: number }> => {
+  const { reminders, count } = await getAllRemindersDao(limit, offset);
+  const remindersResponse = reminders.map(reminder => ({
+    uuid: reminder.uuid,
+    title: reminder.title,
+    description: reminder.description,
+    status: reminder.status,
+    priority: reminder.priority,
+    createdAt: reminder.created_at,
+    updatedAt: reminder.updated_at,
+  }));
+
+  return { reminders: remindersResponse, count };
 };

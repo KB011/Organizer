@@ -1,1 +1,1 @@
-export { CreateReminderSchema, CreateReminderInterface } from './reminder-validation';
+export * from './reminder-validation';

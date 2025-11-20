@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
-import { CreateReminderSchema } from '@server/validations';
-import { addReminderService, getReminderByUuidService } from '@server/services';
+import { CreateReminderSchema, GetAllRemindersQuerySchema } from '@server/validations';
+import {
+  addReminderService,
+  getAllRemindersService,
+  getReminderByUuidService,
+} from '@server/services';
 import { ApiResponseHandler, AppError } from '@server/utils';
 import { CreateReminderAPIResponse, GetReminderAPIResponse } from '@server/interfaces';
 
@@ -18,4 +22,17 @@ export const getReminderByUuidController = async (req: Request, res: Response): 
   const response: GetReminderAPIResponse = await getReminderByUuidService(uuid);
 
   ApiResponseHandler.success(res, 'Reminder fetched successfully!', response);
+};
+
+export const getAllRemindersController = async (req: Request, res: Response): Promise<void> => {
+  const { data, error } = GetAllRemindersQuerySchema.safeParse(req.query);
+  if (!data) throw new AppError(400, error.message);
+  const { limit, offset } = data;
+
+  const { reminders, count } = await getAllRemindersService(limit, offset);
+  ApiResponseHandler.success(res, 'All Reminders fetched successfully!', reminders, {
+    limit,
+    offset,
+    totalRecords: count,
+  });
 };

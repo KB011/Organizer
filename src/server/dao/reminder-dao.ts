@@ -57,3 +57,30 @@ export const getReminderByUuidDao = async (
 
   return reminder;
 };
+
+export const getAllRemindersDao = async (
+  limit: number,
+  offset: number
+): Promise<{ reminders: GetReminderPrismaResponse[]; count: number }> => {
+  const [allReminders, totalReminders] = await Promise.all([
+    prisma.reminder.findMany({
+      select: {
+        uuid: true,
+        title: true,
+        description: true,
+        status: true,
+        priority: true,
+        created_at: true,
+        updated_at: true,
+      },
+      orderBy: {
+        created_at: 'asc',
+      },
+      take: limit,
+      skip: offset,
+    }),
+    await prisma.reminder.count(),
+  ]);
+
+  return { reminders: allReminders, count: totalReminders };
+};
