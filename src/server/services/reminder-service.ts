@@ -1,5 +1,10 @@
-import { addReminderDao, getAllRemindersDao, getReminderByUuidDao } from '@server/dao';
-import { CreateReminderInterface } from '@server/validations';
+import {
+  addReminderDao,
+  getAllRemindersDao,
+  getReminderByUuidDao,
+  updateReminderByUuidDao,
+} from '@server/dao';
+import { CreateReminderInterface, UpdateReminderInterface } from '@server/validations';
 import { CreateReminderAPIResponse, GetReminderAPIResponse } from '@server/interfaces';
 import { logger } from '@server/config';
 import { AppError } from '@server/utils';
@@ -66,4 +71,17 @@ export const getAllRemindersService = async (
   }));
 
   return { reminders: remindersResponse, count };
+};
+
+export const updateReminderByUuidService = async (
+  reminderUuid: string,
+  payload: UpdateReminderInterface
+): Promise<GetReminderAPIResponse | void> => {
+  let updatedReminder: GetReminderAPIResponse;
+  const { title, description, priority, status } = payload;
+  if (status) {
+  } else {
+    updatedReminder = await updateReminderByUuidDao(reminderUuid, title, description, priority);
+    return updatedReminder;
+  }
 };

@@ -1,6 +1,12 @@
 import { prisma } from '@server/config';
 import { CreateReminderInterface } from '@server/validations';
-import { CreateReminderPrismaResponse, GetReminderPrismaResponse } from '@server/interfaces';
+import {
+  CreateReminderPrismaResponse,
+  GetReminderPrismaResponse,
+  GetReminderAPIResponse,
+} from '@server/interfaces';
+import { Priority } from '@/prisma-client/enums';
+import { toCamelCase } from '@server/utils';
 
 export const addReminderDao = async ({
   title,
@@ -83,4 +89,33 @@ export const getAllRemindersDao = async (
   ]);
 
   return { reminders: allReminders, count: totalReminders };
+};
+
+export const updateReminderByUuidDao = async (
+  reminderUuid: string,
+  title?: string,
+  description?: string,
+  priority?: Priority
+): Promise<GetReminderAPIResponse> => {
+  const updatedReminder = await prisma.reminder.update({
+    where: {
+      uuid: reminderUuid,
+    },
+    data: {
+      ...(title && { title }),
+      ...(description && { description }),
+      ...(priority && { priority }),
+    },
+    select: {
+      uuid: true,
+      title: true,
+      description: true,
+      status: true,
+      priority: true,
+      created_at: true,
+      updated_at: true,
+    },
+  });
+
+  return toCamelCase(updatedReminder);
 };
