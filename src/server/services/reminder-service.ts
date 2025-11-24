@@ -3,11 +3,13 @@ import {
   getAllRemindersDao,
   getReminderByUuidDao,
   updateReminderByUuidDao,
+  updateReminderStatusByUuidDao,
 } from '@server/dao';
 import { CreateReminderInterface, UpdateReminderInterface } from '@server/validations';
 import { CreateReminderAPIResponse, GetReminderAPIResponse } from '@server/interfaces';
 import { logger } from '@server/config';
 import { AppError } from '@server/utils';
+import { isAllowedStatusTypeGuard } from '../helpers';
 
 export const addReminderService = async (
   reminderPayload: CreateReminderInterface
@@ -79,9 +81,16 @@ export const updateReminderByUuidService = async (
 ): Promise<GetReminderAPIResponse | void> => {
   let updatedReminder: GetReminderAPIResponse;
   const { title, description, priority, status } = payload;
-  if (status) {
+  if (isAllowedStatusTypeGuard(status)) {
+    updatedReminder = await updateReminderStatusByUuidDao(reminderUuid, status);
   } else {
-    updatedReminder = await updateReminderByUuidDao(reminderUuid, title, description, priority);
-    return updatedReminder;
+    updatedReminder = await updateReminderByUuidDao(
+      reminderUuid,
+      title,
+      description,
+      status,
+      priority
+    );
   }
+  return updatedReminder;
 };

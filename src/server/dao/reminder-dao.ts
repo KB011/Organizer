@@ -5,8 +5,9 @@ import {
   GetReminderPrismaResponse,
   GetReminderAPIResponse,
 } from '@server/interfaces';
-import { Priority } from '@/prisma-client/enums';
+import { Priority, ReminderStatus } from '@/prisma-client/enums';
 import { toCamelCase } from '@server/utils';
+import { AllowedReminderStatus } from '@server/helpers';
 
 export const addReminderDao = async ({
   title,
@@ -95,6 +96,7 @@ export const updateReminderByUuidDao = async (
   reminderUuid: string,
   title?: string,
   description?: string,
+  status?: ReminderStatus,
   priority?: Priority
 ): Promise<GetReminderAPIResponse> => {
   const updatedReminder = await prisma.reminder.update({
@@ -104,7 +106,35 @@ export const updateReminderByUuidDao = async (
     data: {
       ...(title && { title }),
       ...(description && { description }),
+      ...(status && { status }),
       ...(priority && { priority }),
+    },
+    select: {
+      uuid: true,
+      title: true,
+      description: true,
+      status: true,
+      priority: true,
+      created_at: true,
+      updated_at: true,
+    },
+  });
+
+  return toCamelCase(updatedReminder);
+};
+
+export const updateReminderStatusByUuidDao = async (
+  reminderUuid: string,
+  status: AllowedReminderStatus
+): Promise<GetReminderAPIResponse> => {
+  const updatedReminder = await prisma.reminder.update({
+    where: {
+      uuid: reminderUuid,
+    },
+    data: {
+      status,
+      [status === ReminderStatus.COMPLETED ? 'completed_at' : 'deleted_at']:
+        new Date().toISOString(),
     },
     select: {
       uuid: true,
