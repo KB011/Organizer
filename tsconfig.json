@@ -7,14 +7,16 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"],
-      "@server/*": ["server/*"]
+      "@server/*": ["server/*"],
+      "@client/*": ["client/src/*"]
     },
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strict": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
