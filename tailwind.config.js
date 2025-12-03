@@ -1,3 +1,5 @@
+import animate from 'tailwindcss-animate';
+
 export default {
   content: ['./src/client/public/index.html', './src/client/src/**/*.{ts, tsx}'],
 
@@ -5,5 +7,5 @@ export default {
     extend: {},
   },
 
-  plugins: [],
+  plugins: [animate],
 };
